@@ -1,0 +1,404 @@
+---
+title: "Coursework 6"
+author: "Fortunat Mutunda"
+date: "March 18, 2016"
+output: pdf_document
+---
+1. Construct an FP-tree using the same data set as last week 
+(use the support count threshold smin = 2). 
+Explain all the steps of the tree construction and draw a resulting tree.
+Based on this tree answer the questions: 
+how many transactions contain {E,F} and {C,H} ?
+
+
+![step 1](image1.jpg) 
+
+First things first I had to check the frequency of each element in the transaction.
+And in my observations the most frequent item is E and the less frequent I. The rest of the items 
+are 5 on average so I will oraginze them in alphabetic order.
+
+![step 2](image2.jpg) 
+
+Notice in the table at the left I have set them by priority and at the right I have reorganized all of them.
+
+![step 3](image3.jpg)
+
+Finaly This is my FP-Tree 
+
+![table](FullSizeRender 4.jpg)
+
+
+My conclusion here is that (Using depth first search method) I found out that there are 3 {E,F} transactions
+and  4 {C,H} transactions
+NB This conclusion is based on the study of the above snapshot fptree diagram. The both considered items order have more than 2 min treshold
+
+***My conclusion based on the fact that the min treshold is 2***
+
+2. Evaluate various interestingness measures for association rules.
+Generate randomly a broad range of various 2x2 contingency tables
+(f11, f10, f01, f00) for N=10,000 items. 
+Sample the space so that each cell individually, 
+in pairs, or triples is larger than "others".
+In this way sample at least 10,000 different possible contingency tables.
+Calculate 5 various scores based on those data (feel free to select) and report 
+10 top 2x2 tables that are the "best" according to that measure. 
+Use rows to represent the 4 numbers; and if useful, 
+also the marginal sums and N.
+
+
+```{r , echo=FALSE}
+
+a <- c(sample(1:50000,1))
+b <- c(sample(1:50000,1))
+c <- c(sample(1:50000,1))
+d <- 150000 - a - b - c
+dframe <- c(a,b,c,d)
+
+for (i in 1:9999) {
+  a <- c(sample(1:50000,1))
+  b <- c(sample(1:50000,1))
+  c <- c(sample(1:50000,1))
+  d <- 150000 - a - b - c
+  dframe <- c(dframe ,c(a,b,c,d))
+}
+dim(dframe) <- c(4,10000)
+dframe <- t(dframe)
+
+dframe<-as.data.frame(dframe)
+colnames(dframe) <- c("f11","f10","f01","f00")
+
+dframe$laplace <- (dframe$f11 + 1) / (dframe$f11+dframe$f10+2)
+dframe$interest <- (10000*dframe$f11) / ((dframe$f11+dframe$f10) * 
+                                            (dframe$f11+dframe$f01))
+dframe$oddsRatio <- (dframe$f11 * dframe$f00) /
+  (dframe$f01*dframe$f10) 
+
+dframe$jaccard <- dframe$f11 / ((dframe$f11+dframe$f10) + 
+                                    dframe$f01)
+dframe$addedValue <- dframe$f11/(dframe$f11+dframe$f10) +  
+  (dframe$f11 + dframe$f01) / 10000
+sample2 <- dframe[with(dframe, order(addedValue,decreasing = TRUE)),]
+
+
+```
+
+Due to the lenght of the code. I am just going to pick the first five elements in this code snippet. 
+
+```{r}
+tail(dframe,5)
+```
+The Laplace measure n(AB)+1 can be transformed to N×support(A→B)+1 n(A)+2
+N×support(A→B)/confidence(A→B)+2. Since N is a constant, the Laplace measure can be
+considered a function of support(A→ B) and confidence (A→ B). It is easy to show that the Laplace measure is monotone in both support and confidence. This property is useful when the user is only interested in the single most interesting rule, since we only need to check the sc-optimal ruleset, which contains fewer rules than the entire ruleset.
+ 
+
+An odds ratio (OR) is a measure of association between an exposure and an outcome. The OR represents the odds that an outcome will occur given a particular exposure, compared to the odds of the outcome occurring in the absence of that exposure.
+
+
+The Jaccard index, also known as the Jaccard similarity coefficient (originally coined coefficient de communauté by Paul Jaccard), is a statistic used for comparing the similarity and diversity of sample sets. The Jaccard coefficient measures similarity between finite sample sets, and is defined as the size of the intersection divided by the size of the union of the sample sets:
+ 
+ 
+
+
+
+
+
+3. Compare interestingness measures starting from various fixed examples of (f11, f10, f01, f00) and experimenting with each of the four values - by increasing or decreasing it, one at a time. E.g. starting from (250, 250, 250, 250) or ( 200, 200 , 200 , 400 ), make X axis on f11 and varying f11 from 0 to 1000, and Y axis the respective interestingness measure. Likewise, for other fields f10, f01, f11 you can do the same - varying them around that fixed value adding (-100,-99,...,-1,0,+1,+2,...+100 ) or from 0 to 1000, while keeping the other values intact (N will change, obviously).
+Try plotting one score on one scatterplot while varying each of the fields fii independently from others. Explore 4-5 various measures.
+
+```{r}
+
+myframe <- data.frame(
+    f11 = 200, f10=200, f01=200, f00=200
+)
+
+
+calcmeasure <- function(frdata){
+  frdata$laplace <- (frdata$f11 + 1) / (frdata$f11+frdata$f10+2)
+  frdata$interest <- (10000*frdata$f11) / ((frdata$f11+frdata$f10) * 
+                                              (frdata$f11+frdata$f01))
+  frdata$oddsRatio <- (frdata$f11 * frdata$f00) /
+    (frdata$f01*frdata$f10) 
+  
+  frdata$jaccard <- frdata$f11 / ((frdata$f11+frdata$f10) + 
+                                      frdata$f01)
+  frdata$addedValue <- frdata$f11/(frdata$f11+frdata$f10) +  
+    (frdata$f11 + frdata$f01) / 10000
+  
+  return (frdata)
+}
+mfsample <- calcmeasure(myframe)
+mfsample[with(mfsample, order(addedValue,decreasing = TRUE)),]
+```
+
+* Now I increase f11 for by one to 9, lets see the result, while the other remains constant
+
+```{r}
+
+for (k in 2:10){
+  myframe[k,1] = myframe[1,1]+(k-1)
+  myframe[-1,c(2:4)] = myframe[1,c(2:4)]
+}
+  
+mfsample2 <- calcmeasure(myframe)
+
+
+```
+
+* doing the same thing for the second one which is f10
+
+* Now I increase f10 for by one to 9, lets see the result, while the other remains constant
+
+```{r}
+
+for (k in 2:10){
+  myframe[k,2] = myframe[1,2]+(k-1)
+  myframe[-1,c(1,3,4)] = myframe[1,c(1,3,4)]
+}
+  
+mfsample3 <- calcmeasure(myframe)
+
+
+```
+
+* Now I increase f01 for by one to 9, lets see the result, while the other remains constant
+
+```{r}
+
+for (k in 2:10){
+  myframe[k,3] = myframe[1,3]+(k-1)
+  myframe[-1,c(1,2,4)] = myframe[1,c(1,2,4)]
+}
+  
+mfsample4 <- calcmeasure(myframe)
+
+
+```
+
+
+* Now I increase f00 for by one to 9, lets see the result, while the other remains constant
+
+```{r}
+
+for (k in 2:10){
+  myframe[k,4] = myframe[1,4]+(k-1)
+  myframe[-1,c(1:3)] = myframe[1,c(1:3)]
+}
+  
+mfsample5 <- calcmeasure(myframe)
+
+```
+
+* Then plotting these four sets of different changes in the values together with the change in value of one gives:
+
+```{r}
+coln <- colnames(mfsample)
+par(mfrow = c(2,3))
+for (i in 5:9){
+plot(mfsample2$f11, mfsample2[,i], ylab = coln[i])
+}
+
+```
+
+
+```{r}
+par(mfrow = c(2,3))
+for (i in 5:9){
+plot(mfsample3$f10, mfsample2[,i], ylab = coln[i])
+}
+
+```
+
+
+```{r}
+par(mfrow = c(2,3))
+for (i in 5:9){
+plot(mfsample4$f01, mfsample2[,i], ylab = coln[i])
+}
+
+```
+
+
+```{r}
+par(mfrow = c(2,3))
+for (i in 5:9){
+plot(mfsample5$f00, mfsample2[,i], ylab = coln[i])
+}
+
+```
+
+4. Install R packages arules and arulesViz
+install.packages("arules")
+install.packages("arulesViz")
+Get the Titanic survival data from 
+https://courses.cs.ut.ee/MTAT.03.183/2014_spring/uploads/Main/titanic.txt
+Make sure to explore all these commands, vary parameters, read the manual ... 
+Try to vary them to provide nice interpretable outputs. See also 6. and 7.
+
+```{r}
+titanic = read.csv("titanic.txt", header = T, sep = ",")
+```
+
+I am going to hide the output of this code due to its' lenghty and noisy output.
+Buy here lie a bit of what I have discovered. 
+
+```{r, warning=F, message= F, echo= T, results='hide'}
+# Make a note where your data lies ... 
+
+
+#observe the data
+##first 6 observations
+head(titanic)
+#types of features
+str(titanic)
+#dimensionality of the data
+dim(titanic)
+
+#load package for frequent set mining
+library(arules)
+
+#help with apriori
+#?apriori
+
+#run apriori algorithm with default settings
+rules = apriori(titanic)
+
+#inspection of the result
+inspect(rules)
+
+#now let us assume, we want to see only those rules that have rhs as survived:
+rules = apriori(titanic,appearance = list(rhs=c("Survived=No", "Survived=Yes"),default="lhs"))
+inspect(rules)
+
+#let us relax the default settings for the rules we are looking for
+rules = apriori(titanic,parameter = list(minlen=2, supp=0.05, conf=0.8),appearance = list(rhs=c("Survived=No", "Survived=Yes"),default="lhs"))
+
+#visualization
+library(arulesViz)
+plot(rules, method="graph", control=list(type="items"))
+
+```
+
+
+
+
+
+***`str`*** Compactly display the internal structure of an R object, a diagnostic function and an alternative to summary (and to some extent, dput). Ideally, only one line for each ‘basic’ structure is displayed. It is especially well suited to compactly display the (abbreviated) contents of (possibly nested) lists. The idea is to give reasonable output for any R object. It calls args for (non-primitive) function objects.
+
+***`dim`*** has a method for data.frames, which returns the lengths of the row.names attribute of x and of x (as the numbers of rows and columns respectively).
+
+***apriori*** Mine frequent itemsets, association rules or association hyperedges using the Apriori algorithm. The Apriori algorithm employs level-wise search for frequent itemsets. The implementation of Apriori used includes some improvements (e.g., a prefix tree and item sorting). 
+
+***`inspect`*** Provides the generic function inspect and S4 methods to display associations and transactions plus additional information formatted for online inspection.
+
+I have noticed that most of the people that died are the poors who were in second and third class.
+
+
+
+5. Report clearly the most "interesting" rules discovered from Titanic data, and how you came up with those in R.
+
+```{r, results='hide'}
+
+ruless = apriori(titanic,parameter = list(minlen=2, supp=0.3, conf=0.9 ),
+                 appearance = list(rhs=c("Survived=No"),lhs=c("Class=3rd")))
+plot(ruless, shading="order", control=list(main = "Two-key plot"))
+plot(rules, method="scatterplot", interactive=FALSE)
+plot(rules, method="paracoord", control=list(reorder=TRUE))
+
+```
+with a support of 0.3 and a confidance of 0.9 3rd class males adults did not suorvive.
+The reason could be that first they evacuated the women and child then after that the first classes because they were richer than for the rest they had to manage, plus they males were probably trying to save the thier loved ones that is why most of them sacrified themselves.
+
+6. (Bonus, 2p) Continue exploring various interestingness measures - ho to describe them the best, using perhaps the scatterplots measuring the effect of each field in the 2x2 tables. (e.g. how would symmetry look like, or other properties).
+
+
+* Adapting this from the question 3 where I have a fixed 4 values already.
+
+```{r echo=FALSE, warning=FALSE, results='hide', message=FALSE}
+
+library(lawstat) #enables the checking of the symetric properties of these variables
+library(ggplot2)
+library(Rmisc)
+
+
+```
+
+* According to: http://www.inside-r.org/packages/cran/lawstat/docs/symmetry.test
+ - symmetry.test() function " performs test for symmetry about an unknown median. Users can choose between the Cabilio-Masaro test (Cabilio and Masaro, 1996), the Mira test (Mira, 1999), or the MGG test (Miao, Gel and Gastwirth, 2006); and using asymptotic distribution of respective statistics or a distribution from m-out-of-n bootstrap. Additionally to the general distribution asymmetry, the function allows to test for negative or positive skeweness (see the argument side).""
+ 
+```{r, results='hide'}
+# symmetry.test(x, option=c("MGG", "CM", "M"), side=c("both", "left", "right"), 
+#     boot=TRUE, B=1000, q=8/9)
+print("The symmetry test for f11")
+for (l in 5:9){
+  print(paste(" for the ", coln[l]))
+  print(symmetry.test(mfsample2[,l], boot=FALSE))
+}
+
+
+print("The symmetry test for f10")
+for (l in 5:9){
+  print(paste(" for the ", coln[l]))
+  print(symmetry.test(mfsample3[,l], boot=FALSE))
+}
+
+print("The symmetry test for f01, excluding laplace")
+for (l in 6:9){
+  print(paste(" for the ", coln[l]))
+  print(symmetry.test(mfsample4[,l], boot=FALSE))
+}
+```
+
+
+* Most of these measure and changes are asymmetric according to the above result.
+
+* Using the scatterplot to describe the changes in the values of these measure comparing one to another, we have, choosing interest versus laplace in this case
+
+* for the change in f11
+
+```{r, results='hide'}
+
+
+l1 <- ggplot(mfsample2, aes(interest, laplace, size=f11))+geom_point()
+l1
+
+```
+
+* Ofcourse as the size of f11 increases, there tends to be an increase also in the Laplace value and a drastic decrease in the interest values.
+* for the change in f10
+
+```{r, results='hide'}
+
+
+l2 <- ggplot(mfsample3, aes(interest, laplace, size=f10))+geom_point()
+l2
+
+```
+
+* Unlike the change in f11, as the size of f10 increases, there tends to be an increase also in the Laplace value and and in similar manner increase in the interest values.
+* for the change in f01
+
+```{r, results='hide'}
+
+
+l3 <- ggplot(mfsample4, aes(interest, laplace, size=f01))+geom_point()
+l3
+
+```
+
+* This time laplace behave strangly, as the size of f01 increases, there tends to be NO change in the Laplace value but increase in the interest values.
+
+* for the change in f00
+
+```{r, results='hide'}
+
+
+l4 <- ggplot(mfsample5, aes(interest, laplace, size=f00))+geom_point()
+l4
+
+```
+
+* The finally, this gives a very challenging output, This time laplace and interest value stayed at a point even though the value of f00 whas changed NO change in the Laplace value but increase in the interest values.
+
+* Indeed these two measures can be trickish in measuring the interesting ness of different rules. But its quite obvious how the change in only f10 value can give a shift in the values of all these measures. But I can infer that Laplace still shows a better reaction than interest, especially in the case of the change in f11.
+
