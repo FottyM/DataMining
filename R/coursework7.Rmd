@@ -1,0 +1,42 @@
+---
+title: "coursework7"
+author: "Fortunat Mutunda"
+date: "March 23, 2016"
+output: pdf_document
+---
+```{r, echo=FALSE,message=FALSE,warning=FALSE}
+
+library(arules)
+library(arulesViz)
+library(ggplot2)
+```
+1. Report which tools you decided to use, how you used them, what were the first results. Also report the running times for the tools chosen.
+
+```{r}
+supermarket = read.csv("supermarket.txt", header = F, sep = " ")
+#write.csv(supermarket, file = "supermarket.csv")
+trans = read.transactions("supermarket.txt", format = "basket" , sep = " ")
+#basket = read.transactions("supermarket.csv", format = "basket" , sep = ",")
+rules = apriori(trans)
+plot(rules)
+```
+
+2. Report overall 10 different high-support, high-confidence, high-lift rules; provide the respective contingency tables and scores.
+
+3. Discuss whether some other scores studied last week or in the lecture slides would help identify "more interesting" and different rules?
+
+4. Given the ability to discover frequent itemsets and association rules, propose a strategy to use these tools to study different customer segments, shops, shopping times, or specific products.
+
+5. Select some relatively high-support high-confidence rule (A->B) and based on that example describe the conditional probabilities P(A|B) and P(B|A), as well as the Bayes rule.
+
+6. (Bonus 2p) Run Krimp on same data, provide commands and describe your findings and compare to FIM+Association rules. (link to Krimp documentation)
+
+
+
+
+
+```{r, echo=FALSE}
+
+```
+
+
