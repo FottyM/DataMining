@@ -12,6 +12,14 @@ library(ggplot2)
 ```
 1. Report which tools you decided to use, how you used them, what were the first results. Also report the running times for the tools chosen.
 
+***comment***
+*Mine rules from the supermarket txt*
+1. Run whatever tool you run and plot the running time 
+2. Get suppeort and confidence
+3. Which tool did you use , how did you use it how long did it run.
+4. Discrive in general... show examples, max, min,... etc.
+5. How did you get the result what params etc...
+
 ```{r}
 supermarket = read.csv("supermarket.txt", header = F, sep = " ")
 #write.csv(supermarket, file = "supermarket.csv")
@@ -22,14 +30,27 @@ plot(rules)
 ```
 
 2. Report overall 10 different high-support, high-confidence, high-lift rules; provide the respective contingency tables and scores.
+***contengancy table ***
+if I can find a tool that get me a contengancy table.
+show the top 10 rules.
 
 3. Discuss whether some other scores studied last week or in the lecture slides would help identify "more interesting" and different rules?
+***Use something from last homewok***
+no confidence or lift or anything try other maesures 
 
 4. Given the ability to discover frequent itemsets and association rules, propose a strategy to use these tools to study different customer segments, shops, shopping times, or specific products.
+***What can you do with the data?***
+Just write something, what method toools you have learnt so far to study diff rules...
+Suggest a plan...etc.
+There is nothing specific, just be creative... In which part can you use frequent set item or item set mining 
 
 5. Select some relatively high-support high-confidence rule (A->B) and based on that example describe the conditional probabilities P(A|B) and P(B|A), as well as the Bayes rule.
 
-6. (Bonus 2p) Run Krimp on same data, provide commands and describe your findings and compare to FIM+Association rules. (link to Krimp documentation)
+*** Just learn what a conditional probalities ***
+
+6. (Bonus 2p) Run Krimp on same data, provide commands and describe your findings and compare to Frequent Itemset Mining + Association rules. (link to Krimp documentation)
+
+***Krimp ***
 
 
 
