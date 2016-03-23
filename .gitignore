@@ -4,3 +4,9 @@
 .tiff
 .DS_STORE
 .idea
+R/.RData
+R/.RDataTmp
+R/.RDataTmp1
+R/.Rapp.history
+R/.Rhistory
+R/.ipynb_checkpoints/
