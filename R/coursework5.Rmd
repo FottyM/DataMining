@@ -1,0 +1,484 @@
+---
+title: "Coursework 5 Q-Q-plots and frequent item sets"
+author: "Fortunat Mutunda"
+date: "March 8, 2016"
+output:
+  pdf_document: default
+  html_document:
+    fig_caption: yes
+    fig_height: 6
+    fig_width: 8
+    theme: readable
+  word_document: default
+---
+
+### Question 1
+
+1. Use the data of child height/weight and study them using qq-plots in a specific age and gender at a time:
+  + Compare heights of underweight and very overweight children
+  + Compare one of the attributes (height, weight, BMI) between boys and girls (select either younger or older age group) to each other.
+
+```{r, fig.retina= T, echo=FALSE}
+dataframe = read.csv("small1.csv")
+noOutliers = dataframe[dataframe$ageinmonths>=0 & dataframe$height>=0 & 
+                         dataframe$weight>=0 & dataframe$bmi>=0,]
+sampledf = sample(noOutliers, 5000,replace = T)
+```
+
+
+####First I am going to plot  height vs weight for the males and females to see what information I can get from there.
+```{r }
+par(col.lab = "red", col = "red", bg = "white",mfrow=c(1,2))
+#Female general
+qqplot(x = sampledf$height[sampledf$genderdescription == "Female"] ,
+       y = sampledf$weight[sampledf$genderdescription =="Female"] ,
+       xlab = "Heights ", ylab = "Wieght", main = "Females " , col = "magenta")
+
+#Male general
+qqplot(x = sampledf$height[sampledf$genderdescription == "Male"] ,
+       y = sampledf$weight[sampledf$genderdescription =="Male"], 
+       col = "red" , xlab = "Heights ", ylab = "Wieght" , main = "Males " )
+sorteddf = sampledf[order(sampledf$bmi),] 
+```
+
+At around 120 cm of height the growth of both males and females in terms of weight in comparison to height has literally stop. The boy and the girls stop increasing weight but just increase in height. For about 120 to roughly 130 cm it just the increase in height but not weight.
+But if we pay a closer look during that period the boys tend to increase faster still.
+I am going to take that specific part just to be sure.
+
+```{r, echo=FALSE}
+par(col.lab = "black", col = "red", bg = "white",mfrow=c(1,2))
+sorteddf = sampledf[order(sampledf$bmi),] 
+
+#Female between 115 and 135
+qqplot(x = sampledf$height[sampledf$genderdescription == "Female" 
+                           & sampledf$height >= 115  & sampledf$height <=135 ] ,
+       y = sampledf$weight[sampledf$genderdescription =="Female"] , 
+       xlab = "Heights ", ylab = "Wieght",
+       main = "Genenarl Females heigt 115 to 135" , col = "magenta")
+
+# Males between 115 and 135
+qqplot(x = sampledf$height[sampledf$genderdescription == "Male" & 
+                             sampledf$height >= 115 & sampledf$height <=135 ],
+       y = sampledf$weight[sampledf$genderdescription =="Male"], col = "red" ,
+       xlab = "Heights ", ylab = "Wieght" 
+       , main = "Genenarl Males height 115 to 135" )
+
+```
+
+Although the growth in terms of weight is slow during this time, it is very clear that the males still increase weight faster than the females during this specific period. When the males grow faster in height and weight the females take their time and are late as if they are wearing make up. But it is interesting to see that at the slowest speed of growth some are still one group is still faster that the other one. 
+
+
+#### Then now I am going to separate each gender and by wieght :
+
+
++ Underweight
++ Normal
++ Over weight
++ Obese
+```{r, fig.retina= T, warning=T, message=T}
+
+# separate them first 
+underWeight = sorteddf[sorteddf$bmi <= 18.5, ]
+NormalWeight = sorteddf[sorteddf$bmi >= 18.5 & sorteddf$bmi <= 24.9 ,]
+overWeight = sorteddf[sorteddf$bmi >= 25 & sorteddf$bmi <= 29.9 ,]
+obesity = sorteddf[sorteddf$bmi >29.9,]
+
+par(col.lab = "blue", col = "black", bg = "white",mfrow=c(2,2))
+# underweight 
+#Females
+qqnorm(underWeight$height[underWeight$genderdescription == "Female" & 
+                        underWeight$height >= 110 & underWeight$height <= 140 ],
+       col = c("magenta"), main = "Females underwieght")
+qqline(underWeight$height[underWeight$genderdescription == "Female" &
+                            underWeight$height >= 110 & underWeight$height <= 140],
+       col = c("darkblue"))
+# underwieght 
+#Males
+qqnorm(underWeight$height[underWeight$genderdescription == "Male"& 
+                            underWeight$height >= 110 & underWeight$height <= 140 ], 
+       col = c("orange"), main = "Males underwieght")
+qqline(underWeight$height[underWeight$genderdescription == "Male" & 
+                            underWeight$height >= 110 & underWeight$height <= 140], 
+       col = c("darkblue"))
+
+
+# very overwieght 
+#Females
+qqnorm(obesity$height[obesity$genderdescription == "Female" &
+                        obesity$height >= 110 & obesity$height <= 140 ], 
+       col = c("magenta"), main = "Females overwieght")
+qqline(obesity$height[obesity$genderdescription == "Female" & 
+                        obesity$height >= 110 & obesity$height <= 140 ],
+       col = c("darkblue"))
+#Male
+qqnorm(obesity$height[obesity$genderdescription == "Male" & 
+                        obesity$height >= 110 & obesity$height <= 140], 
+       col = c("orange"), main = "Males overwieght")
+qqline(obesity$height[obesity$genderdescription == "Male" & 
+                        obesity$height >= 110 & obesity$height <= 140 ], 
+       col = c("darkblue"))
+
+```
+
+The normal distribution of the underweight males and females at the height of 110 to 140 is not normal.
+it's looks like a cool later s actually specially for the males where the line divides almost the "s" into two.
+I have also noticed that there are more underweight for both males and females of that specific height section than there are of the obese.
+This data shows that although it is not normally distributed that children tend to grow more on height than they grow on weight.
+
+
+
+
+```{r, fig.retina= TRUE }
+
+par(col.lab = "blue", col = "black", bg = "white",mfrow=c(2,2))
+
+#Females
+# underweight 
+qqnorm(underWeight$weight[underWeight$genderdescription == "Female" &
+                            underWeight$ageinmonths > 100.0 ], col = c("magenta"), 
+       main = "Females underwieght Norm. Dist")
+qqline(underWeight$weight[underWeight$genderdescription == "Female" 
+                          & underWeight$ageinmonths > 100  ], 
+       col = c("darkblue"))
+qqplot(underWeight$height[underWeight$genderdescription == "Female" 
+                          & underWeight$ageinmonths > 100], 
+       underWeight$bmi[underWeight$genderdescription == "Female" &
+                         underWeight$ageinmonths > 100] , 
+       col = "magenta", xlab = "Height " , ylab = "BMI " , 
+       main = "Female underwieght of age higher than 100" )
+
+# very overwieght 
+qqnorm(obesity$weight[obesity$genderdescription == "Female" & 
+                        obesity$ageinmonths > 100], col = c("magenta"), 
+       main = "Females obese Norm. Dist.")
+qqline(obesity$weight[obesity$genderdescription == "Female" &
+                        obesity$ageinmonths > 100 ], col = c("darkblue"))
+qqplot(obesity$height[obesity$genderdescription == "Female" & 
+                        obesity$ageinmonths > 100], 
+       obesity$bmi[obesity$genderdescription == "Female" & obesity$ageinmonths > 100] ,
+       col = "magenta", xlab = "Height " , ylab = "BMI " , 
+       main = "Female obese of age higher than 100" )
+
+#Males
+# underweight
+qqnorm(underWeight$weight[underWeight$genderdescription == "Male" &
+                            underWeight$ageinmonths > 100 ], 
+       col = c("orange"), main = "Males underwieght Norm. Dist")
+qqline(underWeight$weight[underWeight$genderdescription == "Male" & 
+                            underWeight$ageinmonths > 100], col = c("darkblue"))
+qqplot(underWeight$height[underWeight$genderdescription == "Male" &
+                            underWeight$ageinmonths > 100], 
+       underWeight$bmi[underWeight$genderdescription == "Male" &
+                         underWeight$ageinmonths > 100] , col = "orange", 
+       xlab = "Height " , ylab = "BMI" ,
+       main = "Male underwieght of age higher than 100" )
+
+
+#overwieght
+qqnorm(obesity$weight[obesity$genderdescription == "Male" &
+                        obesity$ageinmonths > 100 ], 
+       col = c("orange"), main = "Males obese Norm. Dist")
+qqline(obesity$weight[obesity$genderdescription == "Male" & 
+                        obesity$ageinmonths > 100 ], col = c("darkblue"))
+qqplot(obesity$height[obesity$genderdescription == "Male" & 
+                        obesity$ageinmonths > 100], 
+       obesity$bmi[obesity$genderdescription == "Male" & 
+                     obesity$ageinmonths > 100] ,
+       col = "orange", xlab = "Height " , ylab = "BMI " , 
+       main = "Male obese of age higher than 100" )
+```
+
+
+* Females:
+  The normal distribution for the females underweight is really well,
+  it really well distributed and it just looks so cool.
+  And at some point during their growth notice that the BMI kind of stop and it is only
+   the height that is increasing.
+  In comparison to the overweight, where it is just a mess, the distribution is like a tiny 
+  snake. Even the BMI by weight is more like, they increase in weight, obviously before increasing in height. 
+  
+* Males:
+  on the other underweight males are relatively similar the females whereas overweight males
+  are almost well distributed.
+  But if we have to consider their height in comparison to their BMI, we notice that
+  males grow really really overweight.
+  
+
+
+###Question 2. 
+Fix the age (look only at one specific age – of exactly the same nr of months). 
+Compare the distribution of height vs BMI using two qq-plots – one for boys, one for girls. (Hopefully different students will pick different age for this)
+
+```{r}
+par(col.lab = "Red", col = "darkblue", bg = "white",mfrow=c(1,3))
+sorteddf$ageinmonths = floor(sorteddf$ageinmonths)
+agee = sorteddf[sorteddf$ageinmonths == 125,]
+
+#Females
+qqplot(x = agee$height[agee$genderdescription == "Female"] ,
+       y = agee$bmi[agee$genderdescription == "Female"], 
+       xlab = "Height ", ylab = "BMI",
+       main = "Height  vs BMI Female at age of 125.9" , col = "Red" )
+
+
+qqnorm(agee$height[agee$genderdescription == "Female"],
+       col = "red" ,main = "Female 125 month, Height distribustion")
+qqline(agee$height[agee$genderdescription == "Female"],
+       col = "Blue" ,main = "Female 125 month " )
+
+qqnorm(agee$bmi[agee$genderdescription == "Female"],
+       col = "red" ,main = "Female 125 month, BMI distribustion")
+qqline(agee$bmi[agee$genderdescription == "Female"], 
+       col = "Blue" ,main = "Female 125 month " )
+
+#Males
+qqplot(x = agee$height[agee$genderdescription == "Male"] ,
+       y = agee$bmi[agee$genderdescription == "Male"],  xlab = "Height ", 
+       ylab = "BMI", main = "Height  vs BMI Male at age of 125" , col = "orange" )
+
+qqnorm(agee$height[agee$genderdescription == "Male"], col = "orange" ,
+       main = "Male 125 month, Height distribustion")
+qqline(agee$height[agee$genderdescription == "Male"], col = "Blue" ,
+       main = "Male 125 month " )
+
+qqnorm(agee$bmi[agee$genderdescription == "Male"], col = "orange" , 
+       main = "Male 125 month, BMI distribustion")
+qqline(agee$bmi[agee$genderdescription == "Male"], col = "Blue" , 
+       main = "Male 125 month " )
+
+```
+
+In my first attempt I have managed to plot both gender of the specific age of 125,
+of course I have rounded it so that it will get on the age which are close to 125 but have some extra values after the *"."*.
+After that I have drawn a qqplot of height vs BMI of both genders(males and females).
+
+
+* In this case the weight distribution is normal vs the MBI distribution which as we can see has just some of the subject
+which aren't even close to the line at all.
+
+* it is the same case for males too, but there is a larger quantity of females more that males 
+for this specific age.
+
+
+
+
+
+
+
+
+### Question 3.
+Compare the height of the overweight children against theoretical normal distribution.
+You can limit to certain age group and gender
+
+```{r, fig.align= TRUE, fig.retina= TRUE }
+par(col.lab = "Red", col = "darkblue", bg = "white",mfrow=c(1,2))
+
+#Normal distribution
+#Female 
+qqnorm(overWeight$height[overWeight$genderdescription == "Female"], 
+       col = "Red", main = "Overweight female normal distibution")
+qqline(overWeight$height[overWeight$genderdescription == "Female"], 
+       col = "darkblue")
+
+#Male
+qqnorm(overWeight$height[overWeight$genderdescription == "Male"], 
+       col = "magenta", main = "Overweight male normal distibution")
+qqline(overWeight$height[overWeight$genderdescription == "Male"], 
+       col = "darkblue")
+
+```
+
+
+The overall distribution of the underweight males is well distributed than the overall weight of the females.
+Instead of picking a specific age, I decided to compare both male and females against each other to see which ones are move overweight.
+My conclusion are showing that more males are obese comparing to the females. And the females include a whole lot of outliers by the way.
+
+
+
+
+
+
+### Question 4.
+Use the example from lecture slides:
+Follow the apriori algorithm principle and enumerate all item sets that have support of 0.3 or higher,
+provide support. (probably best to solve using pen and paper or simple text editor and Unix command line tools)
+
+```{r, warning= F, message = FALSE , fig.retina= TRUE, warning= FALSE}
+library(arules)
+library(arulesViz)
+library(Matrix)
+
+
+basket = read.transactions("apriori.csv", format = "basket" , sep = ",")
+image(basket)
+itemFrequencyPlot(basket, support = 0.3)
+
+```
+
+```{r, warning= F, message = FALSE , fig.retina= TRUE, warning= FALSE}
+
+par(col.lab = "Red", col = "darkblue", bg = "white",mfrow=c(1,1))
+ruless <- apriori(basket, parameter= list(supp=0.3))
+plot(ruless, method = "graph")
+plot(ruless, method="paracoord", control=list(reorder=TRUE))
+
+```
+
+In my observation I have noticed a very interesting buying behavior from the given pattern.
+First, if the support is of 0.3 then the most frequent item in the basket is **E** and the less frequent item is **D**.
+Then follows **H** as the second most frequent item. For the remaining **A B C** and **F** are at the same level in term of frequency.
+
+Now, after applying the apriori algorithm principle with a support of 0.3 the results are as follow.
+Chances are big if one buys **F** he/she will buy **C** as well, or if someone gets **C** he/she will get **F** as well.
+The same chances are big when it comes to getting **C** then **H**. Those are the big chances.
+
+1. I have gotten 7 rules in total:
++ F-B
++ D-H-C
++ H-C
++ A-C-D
++ C-H
++ C-D
++ A-C
+
+2. After learning this buying behavior, if it is a buying behavior, then my suggestion would be to put these current items close one to the other in the shop(in case of a physical shop) so that the sales will increase. If it is an online shop, articles should be suggested to be bought together for a certain lower price like amazon often does it.  
+
+
+
+
+
+### Question 5. 
+Calculate the support and confidence for every possible association rule from the above example where there is exactly one item on the left and one item on the right (e.g. A->E). Make two 8x8 tables (A..H) x (A..H), one for support and the other for confidence. Be clever, create some simple script for calculating this. Color these as heat map (e.g. in Excel)
+
+Which rules are “most interesting” from 5 based on those data?
+
+```{r,fig.retina= T}
+
+
+patrn = read.csv("apriori.csv", header=FALSE)
+support = matrix(nrow = 8 ,ncol = 8)
+lab = c("A","B","C","D","E","F","G","H")
+row.names(support) = lab
+colnames(support) = lab
+confidence = support
+par(col.lab = "black", col = "red", bg = "white",mfrow=c(1,2))
+
+
+for(l1 in lab){
+  for(l2 in lab){
+    counter = 0
+    for(i in 1:10){
+      if(TRUE %in% as.vector(patrn[i,]==l1) & TRUE %in% as.vector(patrn[i,]==l2)){
+        counter = counter + 1
+      }
+    }
+    support[l1, l2] = counter
+  }
+}
+#heatmap(support, Rowv=NA, Colv=NA)
+for(l1 in lab){
+  for(l2 in lab){
+    support_counter = 0
+    rule_ok_count = 0
+    for(i in 1:10){
+      if(TRUE %in% as.vector(patrn[i,]==l1) & TRUE %in% as.vector(patrn[i,]==l2)){
+        rule_ok_count = rule_ok_count + 1
+      }
+      if(TRUE %in% as.vector(patrn[i,]==l1)){
+        support_counter = support_counter + 1
+      }
+    }
+    confidence[l1, l2] = 100*rule_ok_count/support_counter
+  }
+}
+
+```
+
+###The lighter the color is the higher its value is. I am sure I have answered all the questions regarding this task on question 4. As for example E is the most sold so it appears brighter and D is the less sold and it appears more red.
+
+```{r}
+heatmap(confidence, Rowv=NA, Colv=NA)
+```
+```{r}
+heatmap(support, Rowv=NA, Colv=NA)
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
