@@ -21,12 +21,17 @@ library(ggplot2)
 5. How did you get the result what params etc...
 
 ```{r}
-supermarket = read.csv("supermarket.txt", header = F, sep = " ")
+#supermarket = read.csv("supermarket.txt", header = F, sep = " ")
 #write.csv(supermarket, file = "supermarket.csv")
 trans = read.transactions("supermarket.txt", format = "basket" , sep = " ")
 #basket = read.transactions("supermarket.csv", format = "basket" , sep = ",")
-rules = apriori(trans)
-plot(rules)
+ruless <- apriori(trans, parameter= list(supp=0.02))
+
+image(trans)
+itemFrequencyPlot(trans, support = 0.02)
+plot(ruless, method = "graph")
+plot(ruless, method="paracoord", control=list(reorder=TRUE))
+
 ```
 
 2. Report overall 10 different high-support, high-confidence, high-lift rules; provide the respective contingency tables and scores.
