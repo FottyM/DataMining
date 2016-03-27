@@ -10,7 +10,7 @@ library(arules)
 library(arulesViz)
 library(ggplot2)
 library(TraMineR)
-
+library(vcd)
 ```
 1. Report which tools you decided to use, how you used them, what were the first results.
 Also report the running times for the tools chosen.
@@ -35,23 +35,80 @@ and it's the one I've been using for the couple past homeworks. It is not only e
 ptm <- proc.time()
 trans = read.transactions("supermarket.txt", format = "basket" , sep = " ")
 itemFrequencyPlot(trans, support = 0.05)
+```
 
+
+1.  First I've read the transaction then I have proceeded by getting which items are the most frequents in the transaction. And it appears that `9108` is the most frequent item in the given itemset, when I use a support of 0.05.
+
+
+```{r, message=FALSE, fig.retina=T}
 #rules
 ruless <- apriori(trans, parameter= list(supp=0.005))
 plot(ruless, method = "graph")
 plot(ruless, method="paracoord", control=list(reorder=TRUE))
-proc.time() - ptm
 
 ```
 
-* First I've read the transaction then I have proceeded by getting which items are the most frequents in the transaction.
-And it appears that `9108` is the most frequent item in the given itemset.
+
+* Second I have applied the `apriori` alogrithm on the given transaction with a support of 0.05. And the I have plotted two differents plots.
+*Notice* that whenever a client almost get any kind of item they also end up getting the item `5330` but bigger chances are mostly when `12562` is gotten then `5330` will be gotten too or when `14914` it is still the same case.
+
+* confidence |   minval | smax | arem  | aval   | originalSupport | support | minlen | maxlen
+       
+       
+        0.8  |     0.1  |  1   |  none | FALSE  |          TRUE   | 0.005   |    1   | 10
 
 
-2. Report overall 10 different high-support, high-confidence, high-lift rules; provide the respective contingency tables and scores.
+
+* This is the running time of the whole process.
+
+```{r}
+proc.time() - ptm
+```
+`proc.time` returns five elements for backwards compatibility, but its print method prints a named vector of length 3. The first two entries are the total user and system CPU times of the current R process and any child processes on which it has waited, and the third entry is the real’ elapsed time since the process was started.
+
+2. Report overall 5 different high-support, high-confidence, high-lift rules; provide the respective contingency tables and scores.
 ***contengancy table ***
 if I can find a tool that get me a contengancy table.
-show the top 10 rules.
+show the top 5 rules.
+
+
+The code here might be a bit redundant but I am going to try to get first the top five 5 support
+
+
+```{r,fig.retina=T}
+
+ruless.sorted = sort(ruless,by = "support")
+five_rules = head(ruless.sorted,5)
+inspect(five_rules)
+```
+
+Then the top 5 hight confidence 
+
+```{r,fig.retina=T}
+
+ruless.sorted = sort(ruless,by = "confidence")
+five_rules = head(ruless.sorted,5)
+inspect(five_rules)
+```
+
+Lastly the top 5 lift
+
+```{r,fig.retina=T}
+
+ruless.sorted = sort(ruless,by = "lift")
+five_rules = head(ruless.sorted,5)
+inspect(five_rules)
+```
+
+data("UCBAdmissions")
+data("PreSex")
+data(HairEyeColor)
+hec = structable(Eye ~ Sex + Hair, data = HairEyeColor)
+
+
+
+
 
 3. Discuss whether some other scores studied last week or in the lecture slides would help identify "more interesting" and different rules?
 ***Use something from last homewok***
