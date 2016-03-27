@@ -1,5 +1,5 @@
 ---
-title: "coursework7"
+title: "Coursework7"
 author: "Fortunat Mutunda"
 date: "March 23, 2016"
 output: pdf_document
@@ -9,30 +9,44 @@ output: pdf_document
 library(arules)
 library(arulesViz)
 library(ggplot2)
-```
-1. Report which tools you decided to use, how you used them, what were the first results. Also report the running times for the tools chosen.
+library(TraMineR)
 
-***comment***
+```
+1. Report which tools you decided to use, how you used them, what were the first results.
+Also report the running times for the tools chosen.
+
+
+***comments:***
 *Mine rules from the supermarket txt*
 1. Run whatever tool you run and plot the running time 
-2. Get suppeort and confidence
+2. Get support and confidence
 3. Which tool did you use , how did you use it how long did it run.
-4. Discrive in general... show examples, max, min,... etc.
+4. Discribe in general... show examples, max, min,... etc.
 5. How did you get the result what params etc...
 
-```{r}
-#supermarket = read.csv("supermarket.txt", header = F, sep = " ")
-#write.csv(supermarket, file = "supermarket.csv")
-trans = read.transactions("supermarket.txt", format = "basket" , sep = " ")
-#basket = read.transactions("supermarket.csv", format = "basket" , sep = ",")
-ruless <- apriori(trans, parameter= list(supp=0.02))
 
-image(trans)
-itemFrequencyPlot(trans, support = 0.02)
+For this first tast I have selected the *arules* library because that's the one I am used to,
+and it's the one I've been using for the couple past homeworks. It is not only easy to use but it is also very intuitive and pretty straight forward. With its nice inuilt function `read.transaction()` I can get all the transations without an hassle.
+
+```{r, message=FALSE, fig.retina=T}
+#df = read.csv("supermarket.txt", header = F, sep = " ")
+
+#Starts from here
+ptm <- proc.time()
+trans = read.transactions("supermarket.txt", format = "basket" , sep = " ")
+itemFrequencyPlot(trans, support = 0.05)
+
+#rules
+ruless <- apriori(trans, parameter= list(supp=0.005))
 plot(ruless, method = "graph")
 plot(ruless, method="paracoord", control=list(reorder=TRUE))
+proc.time() - ptm
 
 ```
+
+* First I've read the transaction then I have proceeded by getting which items are the most frequents in the transaction.
+And it appears that `9108` is the most frequent item in the given itemset.
+
 
 2. Report overall 10 different high-support, high-confidence, high-lift rules; provide the respective contingency tables and scores.
 ***contengancy table ***
@@ -57,12 +71,9 @@ There is nothing specific, just be creative... In which part can you use frequen
 
 ***Krimp ***
 
-
-
-
-
 ```{r, echo=FALSE}
-
+#> install.packages("~/Desktop/KrimpSourceBin20130201_win,lin.zip", repos = NULL, type = "win.binary")
+#Error in install.packages : cannot install Windows binary packages on this platform
 ```
 
 
