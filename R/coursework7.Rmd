@@ -16,15 +16,6 @@ library(vcd)
 Also report the running times for the tools chosen.
 
 
-***comments:***
-*Mine rules from the supermarket txt*
-1. Run whatever tool you run and plot the running time 
-2. Get support and confidence
-3. Which tool did you use , how did you use it how long did it run.
-4. Discribe in general... show examples, max, min,... etc.
-5. How did you get the result what params etc...
-
-
 For this first tast I have selected the *arules* library because that's the one I am used to,
 and it's the one I've been using for the couple past homeworks. It is not only easy to use but it is also very intuitive and pretty straight forward. With its nice inuilt function `read.transaction()` I can get all the transations without an hassle.
 
@@ -111,15 +102,33 @@ inspect(five_rules)
 no confidence or lift or anything try other maesures 
 
 ```{r}
-interestMeasure(ruless,c("oddsRatio", "leverage"))
+head(interestMeasure(ruless,c("oddsRatio", "leverage","addedValue", "chiSquared","certainty", "cosine", "imbalance"), transactions = trans),5)
 
 ```
 
+* The odds of finding X in transactions which contain Y divided by the odds of finding X in transactions which do not contain Y.
+
+* leverage is defined as supp(X->Y) - (supp(X) supp(Y)). It measures the difference of X and Y appearing together in the data set and what would be expected if X and Y where statistically dependent. It can be interpreted as the gap to independence.
+
+* addedValue Defined as conf(X -> Y) - supp(Y)
+
+* chiSquared The chi-squared statistic to test for independence between the lhs and rhs of the rule. The critical value of the chi-squared distribution with 1 degree of freedom (2x2 contingency table) at alpha=0.05 is 3.84; higher chi-squared values indicate that the lhs and the rhs are not independent. Note that the contingency table is likely to have cells with low expected values and that thus Fisher's Exact Test might be more appropriate.
+
+* The certainty factor is a measure of variation of the probability that Y is in a transaction when only considering transactions with X. An inreasing CF means a decrease of the probability that Y is not in a transaction that X is in. Negative CFs have a similar interpretation.
+
+* cosine is defined as supp(X & Y)/sqrt(supp(X)supp(Y))
+
+* imbalance, imbalance ratio is defined as |supp(X) - supp(Y)|/(supp(X) + supp(Y) - supp(X -> Y)) gauges the degree of imbalance between two events that the lhs and the rhs are contained in a transaction. The ratio is close to 0 if the conditional probabilities are similar (i.e., very balanced) and close to 1 if they are very different.
+
+
 4. Given the ability to discover frequent itemsets and association rules, propose a strategy to use these tools to study different customer segments, shops, shopping times, or specific products.
-***What can you do with the data?***
-Just write something, what method toools you have learnt so far to study diff rules...
-Suggest a plan...etc.
-There is nothing specific, just be creative... In which part can you use frequent set item or item set mining 
+
+
+Association rule mining is a popular data mining method available in R as the extension
+package arules. However, mining association rules often results in a very large number
+of found rules, leaving the analyst with the task to go through all the rules and discover
+interesting ones. 
+
 
 5. Select some relatively high-support high-confidence rule (A->B) and based on that example describe the conditional probabilities P(A|B) and P(B|A), as well as the Bayes rule.
 
