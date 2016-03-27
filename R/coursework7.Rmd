@@ -53,10 +53,9 @@ plot(ruless, method="paracoord", control=list(reorder=TRUE))
 * Second I have applied the `apriori` alogrithm on the given transaction with a support of 0.05. And the I have plotted two differents plots.
 *Notice* that whenever a client almost get any kind of item they also end up getting the item `5330` but bigger chances are mostly when `12562` is gotten then `5330` will be gotten too or when `14914` it is still the same case.
 
-* confidence |   minval | smax | arem  | aval   | originalSupport | support | minlen | maxlen
-       
-       
-        0.8  |     0.1  |  1   |  none | FALSE  |          TRUE   | 0.005   |    1   | 10
+
+```confidence  0.8   |   minval 0.1  | smax 1  | arem none | aval FALSE   | originalSupport TRUE | support  0.005 | minlen 1 | maxlen 10```
+
 
 
 
@@ -101,18 +100,20 @@ five_rules = head(ruless.sorted,5)
 inspect(five_rules)
 ```
 
-data("UCBAdmissions")
-data("PreSex")
-data(HairEyeColor)
-hec = structable(Eye ~ Sex + Hair, data = HairEyeColor)
-
 
 
 
 
 3. Discuss whether some other scores studied last week or in the lecture slides would help identify "more interesting" and different rules?
+
+
 ***Use something from last homewok***
 no confidence or lift or anything try other maesures 
+
+```{r}
+interestMeasure(ruless,c("oddsRatio", "leverage"))
+
+```
 
 4. Given the ability to discover frequent itemsets and association rules, propose a strategy to use these tools to study different customer segments, shops, shopping times, or specific products.
 ***What can you do with the data?***
