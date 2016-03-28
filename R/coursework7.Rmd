@@ -91,7 +91,10 @@ five_rules = head(ruless.sorted,5)
 inspect(five_rules)
 ```
 
-
+```{r}
+compt  = read.csv("supermarket.txt", header = F, sep = " ")
+ftable(compt)
+```
 
 
 
@@ -129,6 +132,10 @@ package arules. However, mining association rules often results in a very large 
 of found rules, leaving the analyst with the task to go through all the rules and discover
 interesting ones. 
 
+The most straight forward strategy for me would be to get first the support then lift lastly confidence.
+Then with these 3 I can already get to know what product are often baught, and which ones are always buaght together.
+For ex. Apples and Bananas or cats and cucumbers...etc.
+Knowing that we can create new marketing strategies, like placing items next to each others to increase sales... etc
 
 5. Select some relatively high-support high-confidence rule (A->B) and based on that example describe the conditional probabilities P(A|B) and P(B|A), as well as the Bayes rule.
 
