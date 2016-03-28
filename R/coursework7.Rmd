@@ -29,7 +29,7 @@ itemFrequencyPlot(trans, support = 0.05)
 ```
 
 
-1.  First I've read the transaction then I have proceeded by getting which items are the most frequents in the transaction. And it appears that `9108` is the most frequent item in the given itemset, when I use a support of 0.05.
+*  First I've read the transaction then I have proceeded by getting which items are the most frequents in the transaction. And it appears that `9108` is the most frequent item in the given itemset, when I use a support of 0.05.
 
 
 ```{r, message=FALSE, fig.retina=T}
@@ -58,9 +58,6 @@ proc.time() - ptm
 `proc.time` returns five elements for backwards compatibility, but its print method prints a named vector of length 3. The first two entries are the total user and system CPU times of the current R process and any child processes on which it has waited, and the third entry is the real’ elapsed time since the process was started.
 
 2. Report overall 5 different high-support, high-confidence, high-lift rules; provide the respective contingency tables and scores.
-***contengancy table ***
-if I can find a tool that get me a contengancy table.
-show the top 5 rules.
 
 
 The code here might be a bit redundant but I am going to try to get first the top five 5 support
@@ -91,18 +88,12 @@ five_rules = head(ruless.sorted,5)
 inspect(five_rules)
 ```
 
-```{r}
-compt  = read.csv("supermarket.txt", header = F, sep = " ")
-ftable(compt)
-```
+
 
 
 
 3. Discuss whether some other scores studied last week or in the lecture slides would help identify "more interesting" and different rules?
 
-
-***Use something from last homewok***
-no confidence or lift or anything try other maesures 
 
 ```{r}
 head(interestMeasure(ruless,c("oddsRatio", "leverage","addedValue", "chiSquared","certainty", "cosine", "imbalance"), transactions = trans),5)
@@ -139,15 +130,36 @@ Knowing that we can create new marketing strategies, like placing items next to 
 
 5. Select some relatively high-support high-confidence rule (A->B) and based on that example describe the conditional probabilities P(A|B) and P(B|A), as well as the Bayes rule.
 
-*** Just learn what a conditional probalities ***
+As I have understond the conditional probabilities 
+I can ginve an example:
+The event is that you have Disease X. Let's call this Event D. Since only 2% of people in your situation have Disease X, the  probability of Event D is P(D) = 0.02. If D' represents the probability that Event D is false, then P(D') = 1 - P(D) = 0.98.
+To define the diagnostic value of the test, we need to define another event: that you test positive for Disease X. Let's call this Event T. The diagnostic value of the test depends on the probability you will test positive given that you actually have the disease, written as P(T|D), and the probability you test positive given that you do not have the disease, written as P(T|D'). ”
+Bayes' theorem then would give something like this:
+
+P(D|T) = (P(T|D) P(D))/(P(T|D) P(D) + P(T|D')P(D'))
+
+P(T|D) = 0.99
+
+P(T|D) = 0.09
+
+P(D) = 0.02
+
+P(D') = 0.98
+
+P(D|T) = ((0.99)(0.02))/((0.99)(0.02) + (0.09)(0.98)) = 0,1833
+
+
+
+
+ 
 
 6. (Bonus 2p) Run Krimp on same data, provide commands and describe your findings and compare to Frequent Itemset Mining + Association rules. (link to Krimp documentation)
 
 ***Krimp ***
 
-```{r, echo=FALSE}
-#> install.packages("~/Desktop/KrimpSourceBin20130201_win,lin.zip", repos = NULL, type = "win.binary")
-#Error in install.packages : cannot install Windows binary packages on this platform
+```{r}
+# install.packages("~/Desktop/KrimpSourceBin20130201_win,lin.zip", repos = NULL, type = "win.binary")
+# Error in install.packages : cannot install Windows binary packages on this platform
 ```
 
 
