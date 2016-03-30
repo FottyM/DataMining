@@ -4,29 +4,35 @@ author: "Fortunat Mutunda"
 date: "March 30, 2016"
 output: pdf_document
 ---
-
+```{r}
+library("rpart")
+```
 
 1. Read - http://www.r2d3.us/visual-intro-to-machine-learning-part-1/ What is the quality of the classifier? Can you understand when it works well and when not?
 
 2. Use this small data example and build a decision tree (manually, explaining all steps/choices).
 
-ord.	Outlook	Temp	Humidity	Windy	Play
-1.	Sunny	Hot	High	FALSE	No
-2.	Sunny	Hot	High	TRUE	No
-3.	Overcast	Hot	High	FALSE	Yes
-4.	Rainy	Mild	High	FALSE	Yes
-5.	Rainy	Cool	Normal	FALSE	Yes
-6.	Rainy	Cool	Normal	TRUE	No
-7.	Overcast	Cool	Normal	TRUE	Yes
-8.	Sunny	Mild	High	FALSE	No
-9. Sunny	Cool	Normal	FALSE	Yes
-10.	Rainy	Mild	Normal	FALSE	Yes
-11.	Sunny	Mild	Normal	TRUE	Yes
-12.	Overcast	Mild	High	TRUE	Yes
-13.	Overcast	Hot	Normal	FALSE	Yes
-14.	Rainy	Mild	High	TRUE	No
-15.	Overcast	Cool	High	FALSE	No
-Providing that there is mild, overcast, high humidity and high wind weather - should one play tennis or not?
+
+ord.      | Outlook |	Temp	  | Humidity |	Windy |	Play
+----------|---------|---------|----------|--------|----------
+1.        |  Sunny  |	 Hot	  | High     |	FALSE |	No    
+2.        |  Sunny	|  Hot	  | High	   | TRUE	  |  No    
+3.        | Overcast|  Hot	  |High	     | FALSE  |Yes
+4.        |  Rainy	|  Mild	  |High	     | FALSE	|Yes
+5.        |  Rainy	|  Cool	  |Normal	   | FALSE	|Yes
+6.        | Rainy	  |  Cool	  |Normal	   | TRUE	  |No
+7.        | Overcast|  	Cool	|Normal	   | TRUE	  |Yes
+8.        | Sunny	  |  Mild	  |High	     | FALSE	|No
+9.        |  Sunny  |	 Cool	  |Normal	   | FALSE	|Yes
+10.       |   Rainy |	 Mild	  |Normal	   | FALSE	|Yes
+11.       |  Sunny	|  Mild	  |Normal	   | TRUE	  |Yes
+12.       | Overcast|  Mild	  |High	     | TRUE	  |Yes
+13.       | Overcast|  Hot	  |Normal	   | FALSE	|Yes
+14.       |  Rainy  |	 Mild	  |High	     | TRUE	  |No
+15.       | Overcast|  Cool	  |High	     | FALSE	|No
+
+
+Providing  that there is mild, overcast, high humidity and high wind weather - should one play tennis or not?
 
 3. Use the Cars data set and apply decision trees for classification. Describe the tree. (you can use R, or Weka (install Weka from here), or python... ). Compare the decision tree approach to the association rules derived from the same data.
 
