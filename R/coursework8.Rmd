@@ -34,10 +34,10 @@ ord.      | Outlook |	Temp	  | Humidity |	Windy |	Play
 
 Providing  that there is mild, overcast, high humidity and high wind weather - should one play tennis or not?
 
-3. Use the Cars data set and apply decision trees for classification. Describe the tree. (you can use R, or Weka (install Weka from here), or python... ). Compare the decision tree approach to the association rules derived from the same data.
+3. Use the Cars data set and apply decision trees for classification. Describe the tree. (you can use R, or Weka (install Weka from here), or python... ). Compare the decision tree approach to the association rules derived from the same data.***To make your life easier, we recommend you remove observations with two infrequent classes - good and v-good. You can get the resulting dataset here
+in R, you can use library rpart to build the trees and rpart.plot to visualize them***
 
-To make your life easier, we recommend you remove observations with two infrequent classes - good and v-good. You can get the resulting dataset here
-in R, you can use library rpart to build the trees and rpart.plot to visualize them
+
 4. Use the same cars data set. Apply decision trees and Naive Bayes classifiers on the same data. Can you confirm that one method is better than the other in some way? Perform 10-fold cross-validation. Provide final results as 2x2 tables of TP. FP, FN, TN and some measures - accuracy, precision, recall.
 
 5. Use the Titanic data set - compare your classifiers learned from Titanic data - decision trees, Bayes rules, association rules - and try to characterise the rules observed in data using these approaches. How can they be interpreted against each other?
