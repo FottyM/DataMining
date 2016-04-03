@@ -12,6 +12,8 @@ library(rplotengine)
 1. Read - http://www.r2d3.us/visual-intro-to-machine-learning-part-1/ What is the quality of the classifier? Can you understand when it works well and when not?
 
 
+This is a tricky and 
+
 
 2. Use this small data example and build a decision tree (manually, explaining all steps/choices).
 
@@ -49,12 +51,10 @@ windy = (
     ((9/15) * entropy(c(6,3), unit = "log2" ))
 )
 
-
 humidity = (
  ((8/15) * entropy(c(3,5), unit = "log2" )) + 
     ((7/15) * entropy(c(6,1), unit = "log2" ))
 )
-
 
 temp = (
  ((4/15) * entropy(c(2,2), unit = "log2" )) + 
@@ -71,19 +71,39 @@ outlook = (
 
 entropy(c(2,3), unit = "log2")
 
-
-
-
 ```
   
 
-3. Use the Cars data set and apply decision trees for classification. Describe the tree. (you can use R, or Weka (install Weka from here), or python... ). Compare the decision tree approach to the association rules derived from the same data. ***To make your life easier, we recommend you remove observations with two infrequent classes - good and v-good. You can get the resulting dataset here
-in R, you can use library `rpart` to build the trees and `rpart.plot` to visualize them***
+3. Use the Cars data set and apply decision trees for classification. Describe the tree. (you can use R, or Weka (install Weka from here), or python... ). Compare the decision tree approach to the association rules derived from the same data. 
+
+    *  To make your life easier, we recommend you remove observations with two infrequent classes - good and v-good. You can get the resulting dataset here
+
+
+    *  in R, you can use library `rpart` to build the trees and `rpart.plot` to visualize them
+
+
+```{r, message=FALSE , warning=FALSE, results='hide'}
+
+library(e1071)
+cars = read.csv("car.data.txt", header = T, sep = ",")
+emc2 = class ~  buying + maint + doors + persons + lug_boot + safety
+flash = rpart(emc2, method="class", data=cars)
+plot(flash, uniform=TRUE, main="Three")
+text(flash, use.n=TRUE, all=TRUE, cex=.8)
+```
+
+
 
 
 4. Use the same cars data set. Apply decision trees and Naive Bayes classifiers on the same data. Can you confirm that one method is better than the other in some way? Perform 10-fold cross-validation. Provide final results as 2x2 tables of TP. FP, FN, TN and some measures - accuracy, precision, recall.
 
+
+
+
 5. Use the Titanic data set - compare your classifiers learned from Titanic data - decision trees, Bayes rules, association rules - and try to characterise the rules observed in data using these approaches. How can they be interpreted against each other?
+
+
+
 
 6. (Bonus 1p) How to detect and avoid overfitting? What is the good (optimal?) size of the decision tree classifiers? Use the above Cars data, and for comparison use one of the two data sets - the Mushroom (LINK) or the Connect 4 (LINK ).
 
