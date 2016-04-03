@@ -5,7 +5,8 @@ date: "March 30, 2016"
 output: pdf_document
 ---
 ```{r, echo=FALSE}
-library("rpart")
+library(rpart)
+library(rplotengine)
 ```
 
 1. Read - http://www.r2d3.us/visual-intro-to-machine-learning-part-1/ What is the quality of the classifier? Can you understand when it works well and when not?
@@ -34,7 +35,47 @@ ord.      | Outlook |	Temp	  | Humidity |	Windy |	Play
 15.       | Overcast|  Cool	  |High	     | FALSE	|No
 
 
-Providing  that there is mild, overcast, high humidity and high wind weather - should one play tennis or not?
+    Providing  that there is mild, overcast, high humidity and high wind weather - should one play tennis or not?
+  +  Calculate entropy
+  
+```{r}
+
+library(entropy)
+
+playTennis = entropy(c(6,9), unit = "log2")
+
+windy = (
+ ((6/15) * entropy(c(3,3), unit = "log2" )) + 
+    ((9/15) * entropy(c(6,3), unit = "log2" ))
+)
+
+
+humidity = (
+ ((8/15) * entropy(c(3,5), unit = "log2" )) + 
+    ((7/15) * entropy(c(6,1), unit = "log2" ))
+)
+
+
+temp = (
+ ((4/15) * entropy(c(2,2), unit = "log2" )) + 
+    ((6/15) * entropy(c(4,2), unit = "log2" )) +
+   ((5/15) * entropy(c(3,2), unit = "log2" ))
+)
+
+outlook = (
+ ((5/15) * entropy(c(2,3), unit = "log2" )) + 
+    ((5/15) * entropy(c(4,2), unit = "log2" )) +
+   ((5/15) * entropy(c(3,2), unit = "log2" ))
+)
+
+
+entropy(c(2,3), unit = "log2")
+
+
+
+
+```
+  
 
 3. Use the Cars data set and apply decision trees for classification. Describe the tree. (you can use R, or Weka (install Weka from here), or python... ). Compare the decision tree approach to the association rules derived from the same data. ***To make your life easier, we recommend you remove observations with two infrequent classes - good and v-good. You can get the resulting dataset here
 in R, you can use library `rpart` to build the trees and `rpart.plot` to visualize them***
