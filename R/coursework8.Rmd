@@ -7,6 +7,12 @@ output: pdf_document
 ```{r, echo=FALSE}
 library(rpart)
 library(rplotengine)
+library(entropy)
+library(class) 
+library(e1071) 
+library(rattle)
+library(rpart.plot)
+library(RColorBrewer)
 ```
 
 1. Read - http://www.r2d3.us/visual-intro-to-machine-learning-part-1/ What is the quality of the classifier? Can you understand when it works well and when not?
@@ -42,7 +48,7 @@ ord.      | Outlook |	Temp	  | Humidity |	Windy |	Play
   
 ```{r}
 
-library(entropy)
+
 
 playTennis = entropy(c(6,9), unit = "log2")
 
@@ -51,10 +57,15 @@ windy = (
     ((9/15) * entropy(c(6,3), unit = "log2" ))
 )
 
+ewindy = playTennis - windy
+
+
 humidity = (
  ((8/15) * entropy(c(3,5), unit = "log2" )) + 
     ((7/15) * entropy(c(6,1), unit = "log2" ))
 )
+
+ehumidity = playTennis - humidity
 
 temp = (
  ((4/15) * entropy(c(2,2), unit = "log2" )) + 
@@ -62,17 +73,32 @@ temp = (
    ((5/15) * entropy(c(3,2), unit = "log2" ))
 )
 
+etemp  = playTennis - temp
 outlook = (
  ((5/15) * entropy(c(2,3), unit = "log2" )) + 
     ((5/15) * entropy(c(4,2), unit = "log2" )) +
    ((5/15) * entropy(c(3,2), unit = "log2" ))
 )
 
+eoutlook = playTennis - outlook
 
-entropy(c(2,3), unit = "log2")
+ewindy
+ehumidity
+etemp
+eoutlook
 
 ```
-  
+
+
+This task was more trickier than expected. Basicaly I found two ways of doing it.
+One is just to go with all the data one by one and try to see which one should be the root. It takes time, 
+depending on wheter one is fast at doing that. Or there is another way which is the best solution. To calculate the entropy. Basically I would have to calculate the entropy and then the gain. But doing so I have written a small script to ulstrate how I did, and I have aslo joined a screenshot below for the tree and my calculations.
+Providing  that there is mild, overcast, high humidity and high wind weather, Yes playing tennis is going to happen.
+!["Image two"](IMG_0899.JPG)
+!["Image one"](IMG_0900.JPG)
+!["Image three"](IMG_0898.JPG)
+
+
 
 3. Use the Cars data set and apply decision trees for classification. Describe the tree. (you can use R, or Weka (install Weka from here), or python... ). Compare the decision tree approach to the association rules derived from the same data. 
 
@@ -84,13 +110,26 @@ entropy(c(2,3), unit = "log2")
 
 ```{r, message=FALSE , warning=FALSE, results='hide'}
 
-library(e1071)
-cars = read.csv("car.data.txt", header = T, sep = ",")
+carss = read.csv("car.data.txt", header = T, sep = ",")
 emc2 = class ~  buying + maint + doors + persons + lug_boot + safety
-flash = rpart(emc2, method="class", data=cars)
-plot(flash, uniform=TRUE, main="Three")
+flash = rpart(emc2, method="class", data=carss)
+plot(flash, uniform=TRUE, main="Tree")
 text(flash, use.n=TRUE, all=TRUE, cex=.8)
+fancyRpartPlot(flash)
+
+
 ```
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -98,9 +137,37 @@ text(flash, use.n=TRUE, all=TRUE, cex=.8)
 4. Use the same cars data set. Apply decision trees and Naive Bayes classifiers on the same data. Can you confirm that one method is better than the other in some way? Perform 10-fold cross-validation. Provide final results as 2x2 tables of TP. FP, FN, TN and some measures - accuracy, precision, recall.
 
 
+```{r}
+
+
+pairs(carss, main = "Cars Data ",pch = 21, bg =c("red","green3","blue","cyan","magenta","yellow","orange")[unclass(carss$buying)])
+
+data(carss)
+summary(carss)
+
+classifier<-naiveBayes(carss[,1:7], carss[,7]) 
+table(predict(classifier, carss[,-1]), carss[,1])
+
+
+
+```
+
+This simple case study shows that a Naïve Bayes classifier makes few mistakes in a dataset that, although simple, is not linearly separable, as shown in the scatterplots and by a look at the confusion matrix, where all misclassifications are between unacc and acc.
+
 
 
 5. Use the Titanic data set - compare your classifiers learned from Titanic data - decision trees, Bayes rules, association rules - and try to characterise the rules observed in data using these approaches. How can they be interpreted against each other?
+
+```{r}
+
+titanic <- read.table( "titanic.txt", sep = ',' , header = TRUE)
+tfit <- rpart(Survived ~ Class + Age + Sex, data = titanic)
+plot(tfit, uniform=TRUE)
+text(tfit,use.n=TRUE, all=TRUE, cex=.5)
+length(titanic$Sex[titanic$Sex=="Female" & titanic$Survived =="Yes"])
+tnaive <- naiveBayes(Survived ~ Class + Age + Sex, data = titanic)
+fancyRpartPlot(tfit)
+```
 
 
 
