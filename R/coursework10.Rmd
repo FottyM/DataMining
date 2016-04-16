@@ -1,0 +1,101 @@
+---
+title: "coursework10"
+author: "Fortunat Mutunda"
+date: "April 12, 2016"
+output: pdf_document
+---
+
+HW10 (17.04) - Machine Learning III, Regression analysis
+1. Take the following data and simulate K-NN algorithm to predict the class probabilities of points (3, 5) and (4, 6). Report the probabilities with K=1, K=2 and K=3.
+
+```{r, echo=FALSE}
+libs = c((library(class)),library(knncat), library(knnGarden),library(knnIndep),library(ggplot2), library(gmodels))
+
+dataf = read.csv(file = "knn.csv", header = T, sep = ",")
+#novelTest.chisq(dataf$x_coord, dataf$y_coord , maxi = length(dataf) - 1)
+
+```
+
+#### First I am going to check for k = 1
+
+* I will remove the id first because it does not give any useful information, therefore it is not going to help with anything
+
+```{r}
+str(dataf)
+dataf = dataf[-1]
+```
+Now we see that we have coordinates x and y and each point has been classified either as 1 or 0, therefore I am going to change class into factor 
+because that's the column I am going to use to classify all the observations.
+
+```{r}
+set.seed(9850)
+gp = runif(nrow(dataf))
+dataf = dataf[order(gp),]
+#dataf
+dataf$class = as.factor(dataf$class)
+str(dataf)
+```
+now we can see that there is an even classification of 5 points which belong to 0
+and 5 points which belong to 1.
+
+Before I normalize the rest I am going to first randomazie everything because all the data are clissified with 5 ones then 5 zeroes 
+I'll make it to show 0s and 1s randomly.
+
+```{r}
+head(dataf,4)
+```
+
+Now that is done, let's proceed into normalizing the data.
+
+```{r}
+normalize <- function(x) {
+return ((x - min(x)) / (max(x) - min(x))) }
+dataf_n <- as.data.frame(lapply(dataf[1:2], normalize))
+```
+
+I have just normalized x and y because class is the classifier, after doing so I can proceed into training the data
+
+
+* create a training dataframe 
+
+```{r}
+#CrossTable(dataf$x_coord, dataf$y_coord)
+# taining and testing on given data to see if my formula works
+dataf_train = dataf_n[1:8,]
+dataf_test = dataf_n[9:10]
+# then I pick the training taget which will be taken from the original dataset
+dataf_train_target = dataf [1:8,3] 
+dataf_test_target = dataf[9:10, 3]
+# done now I will try the knn to see if it works 
+
+```
+
+2. In this task we use diabetes dataset to predict diabetes.
+Split the data randomly on 80% of training and 20% for testing.
+Fit the logistic regression on the training set to predict the class.
+Interpret the model. How the Plasma glucose concentration impacts the odds ratio of having diabetes. What about diabetes pedigree function? Which features do not affect (significantly) the risk of having diabetes?
+Now compute Accuracy, Precision, Recall and F1 score on the test set.
+
+
+3. Run K-NN on the same data (also using the same setup) to predict diabetes.
+Try different K's (K=1, K=3).
+Report the same scores as before (for each K value).
+Compare the models with F score. Which model has better Accuracy and F score? (logistic or KNN K1 or KNN K3).
+Optional: plot also roc curves to compare.
+
+
+4. In this task we are using diamonds data from the package ggplot2 (data(diamonds)). Build regression models predicting price from the rest of the features, where
+A) model 1 has all the features
+B) model 2 has all the features + 'carat' and 'depth' of degree 2
+C) model 3 has all the features + 3rd degree polynomials of 'carat' and 'depth' (i.e. carat^3, carat^2, carat, depth^3,...)
+D) model 4 has all the features + 3rd degree polynomials of 'carat' and 'depth' + 'x','y','z' of degree 2
+in R you can use poly(x,d) to evaluate a polynomial of degree d, e.g. lm(price ~ poly(x,3) + ..., data=diamonds)
+Use the regular 80% train / 20% test split.
+Measure the RMSE for all the models on the train and test set and plot a graph, where on x-axis models are sorted according to the complexity of the model and on y-axis RMSE for train and test split. What do you observe? Can we diagnose under- or overfitting problems?
+
+
+5. We have prepared a small Kaggle competition, wherein your task is to apply the regression techniques you have learnt to predict the numerical value of the target variable in the test set. The competition is to be done individually. As you make submissions, you will immediately see how they evaluate (in terms of RMSE) on the public leaderboard. Everyone who makes the first submission before the next week practice session, will be awarded one point. A more detailed description is available on the competition page. Use this link to join the competition.
+
+6. (bonus, until April 30!) For the above competition, students who will finish in the first quaRtile (i.e top 25%) will get 4 extra points, 2nd quartile - 2 extra points, 3rd - 1 point. Important! To avoid overfitting on the public data, kaggle performs the evaluation only on the 50% of the test set. The predictions on the remaining 50% will be used after the competition closes, for the final evaluation.
+
+7. (optional bonus, 1p). Try ridge and lasso regressions for model 4 from task 4 and add the resulting RMSE of training and test set on the plot generated in task 4. Did it help?

@@ -4,7 +4,7 @@ author: "Fortunat Mutunda"
 date: "March 30, 2016"
 output: pdf_document
 ---
-```{r, echo=FALSE}
+```{r, echo=FALSE, results='hide', echo=FALSE, message=FALSE, warning=FALSE}
 library(rpart)
 library(rplotengine)
 library(entropy)
@@ -18,7 +18,11 @@ library(RColorBrewer)
 1. Read - http://www.r2d3.us/visual-intro-to-machine-learning-part-1/ What is the quality of the classifier? Can you understand when it works well and when not?
 
 
-This is a tricky and 
+I might be the only person who finds this question tricky but from what understand, 
+A good classifier is the one that classify data with a maximum of accuray. During my reading of the given article 
+I have discovered that we can have different methods of classifying data. For example a scatter plot and histogram extc... but those method can have problem and give some wrong outputs sometimes. That's why machine learning introduced a decision tree. A decision tree is normaly trained to classify data with zero errors, but it can happen that it does make mistakes, and that is called overfitting.
+
+***Overfitting*** occurs when a statistical model describes random error or noise instead of the underlying relationship. Overfitting generally occurs when a model is excessively complex, such as having too many parameters relative to the number of observations
 
 
 2. Use this small data example and build a decision tree (manually, explaining all steps/choices).
@@ -116,20 +120,9 @@ flash = rpart(emc2, method="class", data=carss)
 plot(flash, uniform=TRUE, main="Tree")
 text(flash, use.n=TRUE, all=TRUE, cex=.8)
 fancyRpartPlot(flash)
-
-
 ```
 
-
-
-
-
-
-
-
-
-
-
+I had to use `fancyRpartPlot` because the other one was too ugly and unreadable. Each node represents the count shows the count of cars, the right side is the negative the left side is positive. Note that some nodes have mixed values like the second node whihc has sefaty=high,med. But the more we got deepper the more everything get separated. Litteraly the tree get more trained to make decisions. We learn more from decision trees than we can learn from association rules in my opinion, besides with decision trees we can learn the future.
 
 
 
@@ -168,6 +161,10 @@ length(titanic$Sex[titanic$Sex=="Female" & titanic$Survived =="Yes"])
 tnaive <- naiveBayes(Survived ~ Class + Age + Sex, data = titanic)
 fancyRpartPlot(tfit)
 ```
+
+
+This titanic tree shows us that there were more males than females. This tree shows a better picture that association rules which gives the privilege of hussling again into making contengancy tables. And Bayes rules, one would need to calculate the probabilities. But here all is there Just by simply looking at it we can know that lots of males from the 3rd class died.
+
 
 
 
