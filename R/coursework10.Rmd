@@ -1,11 +1,11 @@
 ---
-title: "coursework10"
+title: "coursework10 : HW10 (17.04) - Machine Learning III, Regression analysis"
 author: "Fortunat Mutunda"
 date: "April 12, 2016"
 output: pdf_document
 ---
 
-HW10 (17.04) - Machine Learning III, Regression analysis
+
 1. Take the following data and simulate K-NN algorithm to predict the class probabilities of points (3, 5) and (4, 6). Report the probabilities with K=1, K=2 and K=3.
 
 ```{r, echo=FALSE}
@@ -62,13 +62,38 @@ I have just normalized x and y because class is the classifier, after doing so I
 #CrossTable(dataf$x_coord, dataf$y_coord)
 # taining and testing on given data to see if my formula works
 dataf_train = dataf_n[1:8,]
-dataf_test = dataf_n[9:10]
+dataf_test = dataf_n[9:10,]
 # then I pick the training taget which will be taken from the original dataset
 dataf_train_target = dataf [1:8,3] 
 dataf_test_target = dataf[9:10, 3]
 # done now I will try the knn to see if it works 
-
+#sqrt(10)
+#model1 is the trained data
+model1 = knn(train = dataf_train ,test = dataf_test,cl = dataf_train_target,k = 3 )
+model1
 ```
+
+* Now that I am sure that my trained model works I am now going to answer the question for the points (3, 5) and (4, 6)
+for k = 1,2,3
+
+
+```{r,echo=F}
+tests_target = read.csv(file = "knn_test.csv", header = F, sep = ",")
+
+tests_target_n <- as.data.frame(lapply(tests_target[1:2], normalize))
+
+new_test_target = tests_target_n[1:2, ]
+
+modelx = knn(train = dataf_train ,test = new_test_target,cl = dataf_train_target,k = 1 )
+models = knn(train = dataf_train ,test = new_test_target,cl = dataf_train_target,k = 2 )
+model3 = knn(train = dataf_train ,test = new_test_target,cl = dataf_train_target,k = 3 )
+modelx
+models
+model3 
+```
+
+***Conclusion:*** for the three measure when k =1 , 2 ,3 the result for the two given points are respectively 1-0 , 1-0 and 1-0.
+
 
 2. In this task we use diabetes dataset to predict diabetes.
 Split the data randomly on 80% of training and 20% for testing.
