@@ -8,15 +8,16 @@ output: pdf_document
 
 1. Take the following data and simulate K-NN algorithm to predict the class probabilities of points (3, 5) and (4, 6). Report the probabilities with K=1, K=2 and K=3.
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, message=FALSE,warning=FALSE}
 libs = c((library(class)),library(knncat), library(knnGarden),library(knnIndep),library(ggplot2), library(gmodels))
+library(Metrics)
 
 dataf = read.csv(file = "knn.csv", header = T, sep = ",")
-#novelTest.chisq(dataf$x_coord, dataf$y_coord , maxi = length(dataf) - 1)
+
 
 ```
 
-#### First I am going to check for k = 1
+
 
 * I will remove the id first because it does not give any useful information, therefore it is not going to help with anything
 
@@ -67,7 +68,6 @@ dataf_test = dataf_n[9:10,]
 dataf_train_target = dataf [1:8,3] 
 dataf_test_target = dataf[9:10, 3]
 # done now I will try the knn to see if it works 
-#sqrt(10)
 #model1 is the trained data
 model1 = knn(train = dataf_train ,test = dataf_test,cl = dataf_train_target,k = 3 )
 model1
@@ -96,17 +96,71 @@ model3
 
 
 2. In this task we use diabetes dataset to predict diabetes.
-Split the data randomly on 80% of training and 20% for testing.
-Fit the logistic regression on the training set to predict the class.
-Interpret the model. How the Plasma glucose concentration impacts the odds ratio of having diabetes. What about diabetes pedigree function? Which features do not affect (significantly) the risk of having diabetes?
-Now compute Accuracy, Precision, Recall and F1 score on the test set.
 
+* Split the data randomly on 80% of training and 20% for testing.
+
+* Fit the logistic regression on the training set to predict the class.
+
+* Interpret the model. How the Plasma glucose concentration impacts the odds ratio of having diabetes. What about diabetes pedigree function? Which features do not affect (significantly) the risk of having diabetes?
+
+* Now compute Accuracy, Precision, Recall and F1 score on the test set.
+
+
+```{r, echo=FALSE}
+diabetes = read.csv(file = "diabetes.txt", header = T)
+diabetes$class = as.factor(diabetes$class)
+pairs(diabetes[,-9])
+diabetes_training = head(diabetes, 614)
+diabetes_testing = tail(diabetes, 154 )
+diabetes_model = glm(class ~.,family = binomial (link='logit') , data = diabetes_training)
+anova(diabetes_model, test="Chisq")
+summary(diabetes_model)
+```
+
+* use the fitted model to do prediction for the test data
+
+```{r}
+#prediction  = predict(diabetes_model,newdata = diabetes_testing)
+#table(prediction)
+
+fitted.results <- predict(diabetes_model,diabetes_testing,type='response')
+
+fitted.results <- ifelse(fitted.results > 0.5,1,0)
+misClasificError <- mean(fitted.results != diabetes_testing$class)
+print(paste('Accuracy',1-misClasificError))
+table(fitted.results)
+
+```
+
+  
+
+```{r}
+```
 
 3. Run K-NN on the same data (also using the same setup) to predict diabetes.
 Try different K's (K=1, K=3).
 Report the same scores as before (for each K value).
 Compare the models with F score. Which model has better Accuracy and F score? (logistic or KNN K1 or KNN K3).
 Optional: plot also roc curves to compare.
+
+
+```{r}
+gp = runif(nrow(diabetes))
+diabetes = diabetes[order(gp),]
+diabetes$class = as.factor(diabetes$class)
+str(diabetes)
+diabetes_n <- as.data.frame(lapply(diabetes[1:8], normalize))
+diabetes_train = diabetes_n[1:614,]
+diabetes_test = diabetes_n[615:768,]
+
+diabetes_train_target = diabetes [1:614,9] 
+diabetes_test_target = diabetes[615:768, 9]
+modelc = knn(train = diabetes_train ,test = diabetes_test,cl = diabetes_train_target,k = 3 )
+table(modelc)
+modelc = knn(train = diabetes_train ,test = diabetes_test,cl = diabetes_train_target,k = 1)
+table(modelc)
+
+```
 
 
 4. In this task we are using diamonds data from the package ggplot2 (data(diamonds)). Build regression models predicting price from the rest of the features, where
