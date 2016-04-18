@@ -56,7 +56,7 @@ plot(smoothed_dfy)
 #'it looks like those ancient amercans pyramides
 #'and In this sense it is more readable because It is just one sigle curve that
 #'shows the Kernel's evolution although the two kernels represent two datasets
-#'of two diffent kind of people going for shopping at different times withing a year
+#'of two diffent kind of people going for shopping at different times within a year
 #'the kernels look very similar.
 #' but a slight different which could be considered as insignificant 
 #'depedning on what use we want to make out of it.
@@ -89,7 +89,7 @@ barplot(producShopt, main="Product Distribution per shop",xlab="Product baught",
 #'in different shops throughout the year of 2014
 #' the data informs us about 5 shops with different ids' (3,4,18,21,32),
 #'  5 to be precise and
-#' diffrent producrs sold among these shops, namely :
+#' different producrs sold among these shops, namely :
 #' Banana, Coffee_Cream, Eggs_1, Eggs_2, Grapes, Milk_1, Milk_2, Sour_cream_1, 
 #' Sour_cream_2, Vastlakukkel, Whipped_Cream
 #' itemsShops = table(shoptProduct,as.Date(shoptFrame$date,origin = "20140104"))
@@ -184,8 +184,8 @@ plot(density(shop21$time))
 #' The graphe above presents an interesting curve, in the sense that there is a big
 #' increase from 12 to 16 then slowly it starts to decrease, 
 #' I guess that the time people drink most milk
-#' the later it just increase a bit agin the totaly decrease, 
-#' maybe people who have cats went to buy some milk for thier beloved pets
+#' the later it just increase a bit again the totaly decrease, 
+#' maybe people who have cats went to buy some milk for their beloved pets
 #' 
 #' 
 #' 
@@ -255,7 +255,7 @@ margin3 = margin.table(mytable,2)
 
 
 plot(margin3,col =  rainbow(20) , 
-     main = "The shop that recieve the most customers in a day" ,
+     main = "The shop that receive the most customers in a day" ,
      xlab = "Different shops ids ")
 plot(margin2 , lines(margin2, type = "l") , col= "orange", 
      main = "Time with the most people throughout a day!")
