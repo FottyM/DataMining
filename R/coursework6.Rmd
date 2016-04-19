@@ -23,7 +23,7 @@ Notice in the table at the left I have set them by priority and at the right I h
 
 ![step 3](image3.jpg)
 
-Finaly This is my FP-Tree 
+Finally This is my FP-Tree 
 
 ![table](FullSizeRender 4.jpg)
 
@@ -82,7 +82,7 @@ sample2 <- dframe[with(dframe, order(addedValue,decreasing = TRUE)),]
 
 ```
 
-Due to the lenght of the code. I am just going to pick the first five elements in this code snippet. 
+Due to the length of the code. I am just going to pick the first five elements in this code snippet. 
 
 ```{r}
 tail(dframe,5)
@@ -307,7 +307,7 @@ plot(rules, method="paracoord", control=list(reorder=TRUE))
 
 ```
 with a support of 0.3 and a confidance of 0.9 3rd class males adults did not suorvive.
-The reason could be that first they evacuated the women and child then after that the first classes because they were richer than for the rest they had to manage, plus they males were probably trying to save the thier loved ones that is why most of them sacrified themselves.
+The reason could be that first they evacuated the women and child then after that the first classes because they were richer than for the rest they had to manage, plus they males were probably trying to save the their loved ones that is why most of them sacrified themselves.
 
 6. (Bonus, 2p) Continue exploring various interestingness measures - ho to describe them the best, using perhaps the scatterplots measuring the effect of each field in the 2x2 tables. (e.g. how would symmetry look like, or other properties).
 

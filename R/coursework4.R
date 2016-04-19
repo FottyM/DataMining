@@ -63,7 +63,7 @@ sage = sample(noOutliers$ageinmonths, 200)
 dotchart(hage,cex=.45,main="First 200 Age in dataset. ",xlab="Age ")
 dotchart(tage,cex=.45,main="Last 200 Age in dataset. ",xlab="Age")
 dotchart(sage,cex=.45,main="Randomly picked 200 Ages over dataset ",xlab="Age")
-#' all are arround 60 and arround 120 ~ 140 months 
+#' all are around 60 and around 120 ~ 140 months 
 
 
 #' Heights 
@@ -90,8 +90,8 @@ dotchart(hwieght,cex=.45,main="First 200 Wieght in dataset. ",xlab="Weight ")
 dotchart(tweight,cex=.45,main="Last 200 Wieght in dataset. ",xlab="Weight")
 # this is strange cause there are some negative weights 
 dotchart(sweight,cex=.45,main="Randomly picked 200 Weight over dataset ",xlab="Weight")
-#' most of them are concentrated arround 10 ~ 30, but for the rest they are scattered arround,
-#' 40 and some unique ones arround 80
+#' most of them are concentrated around 10 ~ 30, but for the rest they are scattered around,
+#' 40 and some unique ones around 80
 
 #
 
@@ -241,9 +241,9 @@ ggplot(data = femaleOnly, aes(x = ageinmonths, y = bmi)) + geom_line() +
   facet_wrap(~decile)
 
 #'For the males the most meaningful changes in weight is of course in the 10th decile, and we can also see
-#'some meaningful changes in the first and  the 9th decile, both according to the two dominent age groups.
+#'some meaningful changes in the first and  the 9th decile, both according to the two dominant age groups.
 #'for the rest the changes are not really great but they still meaningful. In comparison to the females, the level of fatness
-#'is really huge in the 10 the decile the first and the 9th, it is realy more noticeable here than former group.
+#'is really huge in the 10 the decile the first and the 9th, it is really more noticeable here than former group.
 #'
 
 

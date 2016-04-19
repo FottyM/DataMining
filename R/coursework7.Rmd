@@ -16,7 +16,7 @@ library(vcd)
 Also report the running times for the tools chosen.
 
 
-For this first tast I have selected the *arules* library because that's the one I am used to,
+For this first taste I have selected the *arules* library because that's the one I am used to,
 and it's the one I've been using for the couple past homeworks. It is not only easy to use but it is also very intuitive and pretty straight forward. With its nice inuilt function `read.transaction()` I can get all the transations without an hassle.
 
 ```{r, message=FALSE, fig.retina=T}
