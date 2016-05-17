@@ -1,5 +1,5 @@
 ---
-title: "coursework10 : HW10 (17.04) - Machine Learning III, Regression analysis"
+title: "coursework10 : Machine Learning III, Regression analysis"
 author: "Fortunat Mutunda"
 date: "April 12, 2016"
 output: pdf_document
@@ -25,6 +25,7 @@ dataf = read.csv(file = "knn.csv", header = T, sep = ",")
 str(dataf)
 dataf = dataf[-1]
 ```
+
 Now we see that we have coordinates x and y and each point has been classified either as 1 or 0, therefore I am going to change class into factor 
 because that's the column I am going to use to classify all the observations.
 
@@ -36,6 +37,7 @@ dataf = dataf[order(gp),]
 dataf$class = as.factor(dataf$class)
 str(dataf)
 ```
+
 now we can see that there is an even classification of 5 points which belong to 0
 and 5 points which belong to 1.
 
@@ -77,7 +79,7 @@ model1
 for k = 1,2,3
 
 
-```{r,echo=F}
+```{r,echo=F, warning=FALSE}
 tests_target = read.csv(file = "knn_test.csv", header = F, sep = ",")
 
 tests_target_n <- as.data.frame(lapply(tests_target[1:2], normalize))
@@ -106,7 +108,7 @@ model3
 * Now compute Accuracy, Precision, Recall and F1 score on the test set.
 
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, message=FALSE , warning=F}
 diabetes = read.csv(file = "diabetes.txt", header = T)
 diabetes$class = as.factor(diabetes$class)
 pairs(diabetes[,-9])
@@ -114,8 +116,19 @@ diabetes_training = head(diabetes, 614)
 diabetes_testing = tail(diabetes, 154 )
 diabetes_model = glm(class ~.,family = binomial (link='logit') , data = diabetes_training)
 anova(diabetes_model, test="Chisq")
-summary(diabetes_model)
+#summary(diabetes_model)
+diabetes_model = glm(class ~ times_pregnant + glucose_to + mass_index + pedigree ,family = binomial (link='logit') , data = diabetes_training)
 ```
+
+The stars after the number can tell us which and which quality are fitted to make our classification
+
+```{r,echo=FALSE,warning=F,message=F}
+anova(diabetes_model, test="Chisq")
+#summary(diabetes_model)
+```
+
+As we can see the only datas that are valuable to predict are the one remaining namely times_pregnant  glucose_to and pedigree.
+The rest were useles to our classification of the data.
 
 * use the fitted model to do prediction for the test data
 
@@ -124,18 +137,34 @@ summary(diabetes_model)
 #table(prediction)
 
 fitted.results <- predict(diabetes_model,diabetes_testing,type='response')
-
 fitted.results <- ifelse(fitted.results > 0.5,1,0)
 misClasificError <- mean(fitted.results != diabetes_testing$class)
 print(paste('Accuracy',1-misClasificError))
 table(fitted.results)
-
 ```
 
-  
+***Now let us find the confusion table***
+
 
 ```{r}
+
+diabetes_predicted = rep("0", 154)
+diabetes_predicted[fitted.results > 0.5] = "1"
+tab = table (diabetes_predicted, diabetes_testing$class)
+tab
+
+precision = 89 / (89 + 24)
+recall = 89 / (89 + 10)
+accuracy = (89 + 21) / (89 + 24 + 10 + 31)
+f1 = ((2*89)/(2*89+10+31))
+precision  
+recall  
+accuracy  
+f1
 ```
+
+after removing all the data that could make us do wrong predictions and after making our confusion table 
+I have finly calculated the precision  recall  accuracy  f1, the score are very high, therefore my trained model can survive.
 
 3. Run K-NN on the same data (also using the same setup) to predict diabetes.
 Try different K's (K=1, K=3).
@@ -155,12 +184,41 @@ diabetes_test = diabetes_n[615:768,]
 
 diabetes_train_target = diabetes [1:614,9] 
 diabetes_test_target = diabetes[615:768, 9]
+```
+
+* k = 3
+
+```{r}
 modelc = knn(train = diabetes_train ,test = diabetes_test,cl = diabetes_train_target,k = 3 )
 table(modelc)
-modelc = knn(train = diabetes_train ,test = diabetes_test,cl = diabetes_train_target,k = 1)
-table(modelc)
+```
+
+* k = 1
+
+```{r}
+modelse = knn(train = diabetes_train ,test = diabetes_test,cl = diabetes_train_target,k = 1)
+table(modelse)
+
 
 ```
+
+
+***k=1***
+Correlation coefficient                  0.4132
+Mean absolute error                      0.2532
+Root mean squared error                  0.5032
+Relative absolute error                 56.5431 %
+Root relative squared error            107.6767 %
+ 
+
+***k=3***
+Correlation coefficient                  0.4115
+Mean absolute error                      0.3009
+Root mean squared error                  0.4454
+Relative absolute error                 67.1751 %
+Root relative squared error             95.3091 %
+
+
 
 
 4. In this task we are using diamonds data from the package ggplot2 (data(diamonds)). Build regression models predicting price from the rest of the features, where
@@ -172,9 +230,66 @@ in R you can use poly(x,d) to evaluate a polynomial of degree d, e.g. lm(price ~
 Use the regular 80% train / 20% test split.
 Measure the RMSE for all the models on the train and test set and plot a graph, where on x-axis models are sorted according to the complexity of the model and on y-axis RMSE for train and test split. What do you observe? Can we diagnose under- or overfitting problems?
 
+```{r, echo=F,warning=F, message=FALSE}
+library(ggplot2)
 
-5. We have prepared a small Kaggle competition, wherein your task is to apply the regression techniques you have learnt to predict the numerical value of the target variable in the test set. The competition is to be done individually. As you make submissions, you will immediately see how they evaluate (in terms of RMSE) on the public leaderboard. Everyone who makes the first submission before the next week practice session, will be awarded one point. A more detailed description is available on the competition page. Use this link to join the competition.
+diamond = diamonds
 
-6. (bonus, until April 30!) For the above competition, students who will finish in the first quaRtile (i.e top 25%) will get 4 extra points, 2nd quartile - 2 extra points, 3rd - 1 point. Important! To avoid overfitting on the public data, kaggle performs the evaluation only on the 50% of the test set. The predictions on the remaining 50% will be used after the competition closes, for the final evaluation.
+#model 1
+numberTrain = floor(nrow(diamond)*0.8)
+numberTest = ceiling(nrow(diamond)*0.2)
+
+trainingSet = sample(c(1:nrow(diamond)), numberTrain)
+
+trained_diamond = diamond[trainingSet,]
+tested_diamond = diamond[-trainingSet,]
+
+#write.csv(trained_diamond, file = "hw10_t4_train.csv", row.names = FALSE)
+#write.csv(tested_diamond, file = "hw10_t4_test.csv", row.names = FALSE)
+
+trained_diamond = read.csv("hw10_t4_train.csv",sep=",", header=TRUE)
+tested_diamond = read.csv("hw10_t4_test.csv",sep=",", header=TRUE)
+
+model1 = lm(price~., data=trained_diamond)
+model1_test = lm(price~., data=tested_diamond)
+summary(model1)
+
+tested_diamond$predictions =  predict(model1, newdata=tested_diamond)
+
+
+model2 = lm(price~poly(carat, 2)+poly(depth, 2)+., data=trained_diamond)
+model2_test = lm(price~poly(carat, 2)+poly(depth, 2)+., data=tested_diamond)
+#model2 = lm(price~poly(carat, 2)+poly(depth, 2)+cut+color+clarity+table+x+y+z, data=trained_diamond)
+summary(model2)
+
+model3 = lm(price~poly(carat, 3)+poly(depth, 3)+., data=trained_diamond)
+model3_test = lm(price~poly(carat, 3)+poly(depth, 3)+., data=tested_diamond)
+summary(model3)
+
+model4 = lm(price~poly(carat, 3)+poly(depth, 3)+poly(x, 2)+poly(y, 2)+poly(z, 2)+., data=trained_diamond)
+model4_test = lm(price~poly(carat, 3)+poly(depth, 3)+poly(x, 2)+poly(y, 2)+poly(z, 2)+., data=tested_diamond)
+summary(model4)
+
+diamond_graph_data = matrix(nrow = 4, ncol = 2)
+diamond_graph_data[1,1] = sqrt(mean(residuals(model1)^2))
+diamond_graph_data[2,1] = sqrt(mean(residuals(model2)^2))
+diamond_graph_data[3,1] = sqrt(mean(residuals(model3)^2))
+diamond_graph_data[4,1] = sqrt(mean(residuals(model4)^2))
+
+diamond_graph_data[1,2] = sqrt(mean(residuals(model1_test)^2))
+diamond_graph_data[2,2] = sqrt(mean(residuals(model2_test)^2))
+diamond_graph_data[3,2] = sqrt(mean(residuals(model3_test)^2))
+diamond_graph_data[4,2] = sqrt(mean(residuals(model4_test)^2))
+
+plot(diamond_graph_data[,1], type = "b", ylab = "Root Mean Square Error", ylim=c(1000, 1300))
+lines(diamond_graph_data[,2], type = "b")
+```
+
+Overfitting occurs when a statistical model describes random error or noise instead of the underlying relationship. Overfitting generally occurs when a model is excessively complex, such as having too many parameters relative to the number of observations.
+
 
 7. (optional bonus, 1p). Try ridge and lasso regressions for model 4 from task 4 and add the resulting RMSE of training and test set on the plot generated in task 4. Did it help?
+
+
+
+
