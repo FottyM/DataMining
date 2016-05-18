@@ -94,9 +94,9 @@ eoutlook
 ```
 
 
-This task was more trickier than expected. Basicaly I found two ways of doing it.
+This task was more trickier than expected. Basically I found two ways of doing it.
 One is just to go with all the data one by one and try to see which one should be the root. It takes time, 
-depending on wheter one is fast at doing that. Or there is another way which is the best solution. To calculate the entropy. Basically I would have to calculate the entropy and then the gain. But doing so I have written a small script to ulstrate how I did, and I have aslo joined a screenshot below for the tree and my calculations.
+depending on wheter one is fast at doing that. Or there is another way which is the best solution. To calculate the entropy. Basically I would have to calculate the entropy and then the gain. But doing so I have written a small script to ulstrate how I did, and I have also joined a screenshot below for the tree and my calculations.
 Providing  that there is mild, overcast, high humidity and high wind weather, Yes playing tennis is going to happen.
 !["Image two"](IMG_0899.JPG)
 !["Image one"](IMG_0900.JPG)
@@ -122,7 +122,7 @@ text(flash, use.n=TRUE, all=TRUE, cex=.8)
 fancyRpartPlot(flash)
 ```
 
-I had to use `fancyRpartPlot` because the other one was too ugly and unreadable. Each node represents the count shows the count of cars, the right side is the negative the left side is positive. Note that some nodes have mixed values like the second node whihc has sefaty=high,med. But the more we got deepper the more everything get separated. Litteraly the tree get more trained to make decisions. We learn more from decision trees than we can learn from association rules in my opinion, besides with decision trees we can learn the future.
+I had to use `fancyRpartPlot` because the other one was too ugly and unreadable. Each node represents the count shows the count of cars, the right side is the negative the left side is positive. Note that some nodes have mixed values like the second node which has sefaty=high,med. But the more we got deepper the more everything get separated. Litteraly the tree get more trained to make decisions. We learn more from decision trees than we can learn from association rules in my opinion, besides with decision trees we can learn the future.
 
 
 
